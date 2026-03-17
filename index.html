@@ -863,19 +863,44 @@ async function loadGiftsForced() {
   render();
 }
 
-async function saveGifts() {
-  if (isSaving) return;
-  isSaving = true;
-  // Set lastSavedAt immediately — even before the network call —
-  // so that no background loadGifts() can fire and overwrite local state
-  // while we are mid-save or waiting for a retry
+// ── Save engine: debounced, queued, always saves latest state ──
+let saveTimer = null;
+let activeSave = null;
+let pendingSave = false;
+
+function scheduleSave() {
+  // Mark that state is dirty — block background loads immediately
   lastSavedAt = Date.now();
+  // Debounce: reset timer so rapid mutations coalesce into one save
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(executeSave, 400);
+}
+
+async function executeSave() {
+  // If a save is already in flight, mark that we need another one after
+  if (activeSave) {
+    pendingSave = true;
+    return;
+  }
+  lastSavedAt = Date.now();
+  // Snapshot the current gifts array right now
+  const snapshot = JSON.parse(JSON.stringify(gifts));
+  const payload = snapshot.length > 0 ? snapshot : [{id:'_empty',name:'_empty',claimed:false}];
+  activeSave = doSave(payload);
+  await activeSave;
+  activeSave = null;
+  // If mutations happened while we were saving, save again immediately
+  if (pendingSave) {
+    pendingSave = false;
+    await executeSave();
+  }
+}
+
+async function doSave(payload) {
   let saved = false;
-  // Try up to 3 times with a short delay between attempts
   for (let attempt = 1; attempt <= 3; attempt++) {
     try {
-      // JSONbin rejects empty arrays — use a sentinel when list is empty
-      const payload = gifts.length > 0 ? gifts : [{id:'_empty',name:'_empty',claimed:false}];
+      console.log('[Registry] Saving', payload.filter(g=>g.id!=='_empty').length, 'gifts (attempt', attempt+')');
       const res = await fetch(BIN_URL, {
         method: 'PUT',
         headers: WRITE_HEADERS,
@@ -884,23 +909,32 @@ async function saveGifts() {
       if (res.ok) {
         saved = true;
         lastSavedAt = Date.now();
-        console.log('[Registry] Save attempt', attempt, 'succeeded');
+        console.log('[Registry] Save succeeded');
         break;
       } else {
         const errBody = await res.text().catch(()=>'');
         console.error('[Registry] Save attempt', attempt, 'failed — status:', res.status, 'body:', errBody);
       }
     } catch(e) {
-      console.error('Save attempt', attempt, 'threw:', e);
+      console.error('[Registry] Save attempt', attempt, 'threw:', e);
     }
     if (attempt < 3) await new Promise(r => setTimeout(r, 1500));
   }
   if (!saved) {
     toast('Could not save — check your connection and try again.');
-    // Keep lastSavedAt set so loadGifts() still does not overwrite local state
-    // The user still sees the correct local state; they can retry manually
   }
-  isSaving = false;
+}
+
+// Keep saveGifts() as the public API — now just schedules a save
+async function saveGifts() {
+  scheduleSave();
+  // Wait for the debounce + save to fully complete before returning
+  // so callers that await saveGifts() know when it is done
+  await new Promise(resolve => {
+    const check = setInterval(() => {
+      if (!saveTimer && !activeSave) { clearInterval(check); resolve(); }
+    }, 100);
+  });
 }
 
 function render() {
