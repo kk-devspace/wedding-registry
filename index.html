@@ -775,8 +775,10 @@ const ADMIN_PW = 'nikitakunal2025';
 const BIN_ID   = '69b929e5aa77b81da9f0f5b8';
 const API_KEY  = '$2a$10$3at.MuoFiADsiRh25z1zaeODJIbu/LXwAGakzgI5DPelW8vBz7b/2';
 const BIN_URL  = 'https://api.jsonbin.io/v3/b/' + BIN_ID;
+// READ: X-Bin-Meta:false returns the array directly (no wrapper object)
+// WRITE: do NOT use X-Bin-Meta on PUT — it is a read-only header and breaks saves
 const READ_HEADERS  = { 'X-Master-Key': API_KEY, 'X-Bin-Meta': 'false' };
-const WRITE_HEADERS = { 'Content-Type': 'application/json', 'X-Master-Key': API_KEY, 'X-Bin-Meta': 'false' };
+const WRITE_HEADERS = { 'Content-Type': 'application/json', 'X-Master-Key': API_KEY };
 
 let guestId = sessionStorage.getItem('guestId');
 if (!guestId) { guestId = 'g_' + Math.random().toString(36).slice(2,10); sessionStorage.setItem('guestId', guestId); }
@@ -785,12 +787,16 @@ let gifts = [];
 let pendingClaimId = null;
 let isSaving = false;
 let lastSavedAt = 0;
-const SAVE_COOLDOWN = 8000;
+// Cooldown must be longer than the poll interval (60s) so a background
+// refresh never overwrites local state that was just saved
+const SAVE_COOLDOWN = 70000; // 70s > 60s poll interval
 
 async function loadGifts() {
+  // Never overwrite local state while saving or shortly after a save
   if (isSaving || (Date.now() - lastSavedAt < SAVE_COOLDOWN)) return;
   try {
     const res = await fetch(BIN_URL + '/latest', { method: 'GET', headers: READ_HEADERS });
+    if (!res.ok) { console.error('Load HTTP error:', res.status); return; }
     let raw = await res.json();
     if (!Array.isArray(raw)) raw = [];
     gifts = raw.filter(g => g.id !== 'init' && g.name !== 'placeholder');
@@ -801,8 +807,10 @@ async function loadGifts() {
 }
 
 async function loadGiftsForced() {
+  // Only used on initial page load — always fetches fresh data
   try {
     const res = await fetch(BIN_URL + '/latest', { method: 'GET', headers: READ_HEADERS });
+    if (!res.ok) { console.error('Load HTTP error:', res.status); return; }
     let raw = await res.json();
     if (!Array.isArray(raw)) raw = [];
     gifts = raw.filter(g => g.id !== 'init' && g.name !== 'placeholder');
@@ -815,11 +823,36 @@ async function loadGiftsForced() {
 async function saveGifts() {
   if (isSaving) return;
   isSaving = true;
-  try {
-    const res = await fetch(BIN_URL, { method: 'PUT', headers: WRITE_HEADERS, body: JSON.stringify(gifts) });
-    if (!res.ok) throw new Error(res.status);
-    lastSavedAt = Date.now();
-  } catch(e) { toast('Network error - please try again.'); }
+  // Set lastSavedAt immediately — even before the network call —
+  // so that no background loadGifts() can fire and overwrite local state
+  // while we are mid-save or waiting for a retry
+  lastSavedAt = Date.now();
+  let saved = false;
+  // Try up to 3 times with a short delay between attempts
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      const res = await fetch(BIN_URL, {
+        method: 'PUT',
+        headers: WRITE_HEADERS,
+        body: JSON.stringify(gifts)
+      });
+      if (res.ok) {
+        saved = true;
+        lastSavedAt = Date.now(); // refresh timestamp on confirmed success
+        break;
+      } else {
+        console.error('Save attempt', attempt, 'failed with status', res.status);
+      }
+    } catch(e) {
+      console.error('Save attempt', attempt, 'threw:', e);
+    }
+    if (attempt < 3) await new Promise(r => setTimeout(r, 1500));
+  }
+  if (!saved) {
+    toast('Could not save — check your connection and try again.');
+    // Keep lastSavedAt set so loadGifts() still does not overwrite local state
+    // The user still sees the correct local state; they can retry manually
+  }
   isSaving = false;
 }
 
@@ -957,7 +990,7 @@ function toast(msg) {
 }
 
 loadGiftsForced();
-setInterval(loadGifts, 30000);
+setInterval(loadGifts, 60000); // poll every 60s; cooldown is 70s so saves are always safe
 </script>
 </body>
 </html>
