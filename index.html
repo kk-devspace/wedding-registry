@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Nikita weds Kunal — Gift Registry</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet"/>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Lato',sans-serif;
+    background:#0d0806;
+    color:#f5e6d0;
+    min-height:100vh;
+  }
+  .hero{
+    text-align:center;
+    padding:4rem 1rem 2.5rem;
+    background:radial-gradient(ellipse at 50% 0%, #2a1200 0%, #0d0806 70%);
+    border-bottom:1px solid #2a1808;
+  }
+  .ornament{font-size:1.6rem;color:#c9933a;letter-spacing:10px;margin-bottom:1rem;display:block}
+  .hero h1{
+    font-family:'Playfair Display',serif;
+    font-size:clamp(2rem,6vw,3.4rem);
+    font-weight:400;
+    color:#f5e6d0;
+    line-height:1.15;
+  }
+  .hero h1 .amp{color:#c9933a;font-style:italic;margin:0 0.3em}
+  .hero-sub{
+    font-size:0.75rem;
+    letter-spacing:4px;
+    text-transform:uppercase;
+    color:#8a6040;
+    margin-top:0.8rem;
+  }
+  .hero-msg{
+    max-width:520px;
+    margin:1.6rem auto 0;
+    color:#8a6040;
+    font-size:0.88rem;
+    line-height:1.8;
+    font-weight:300;
+  }
+  .divider{
+    display:flex;align-items:center;gap:14px;
+    margin:2rem auto;max-width:900px;padding:0 1rem;
+    color:#c9933a;
+  }
+  .divider::before,.divider::after{content:'';flex:1;height:1px;background:linear-gradient(to right,transparent,#3a2010)}
+  .divider::after{background:linear-gradient(to left,transparent,#3a2010)}
+  .divider span{font-size:1.1rem;opacity:.8}
+  .page{max-width:920px;margin:0 auto;padding:0 1rem 5rem}
+  .status-bar{
+    background:#140c06;
+    border:1px solid #2a1808;
+    border-radius:10px;
+    padding:1rem 1.5rem;
+    display:flex;gap:2rem;justify-content:center;flex-wrap:wrap;
+    margin-bottom:2rem;
+  }
+  .stat{text-align:center}
+  .stat-num{font-family:'Playfair Display',serif;font-size:1.8rem;color:#c9933a}
+  .stat-lbl{font-size:0.65rem;letter-spacing:2.5px;text-transform:uppercase;color:#5a3820;margin-top:2px}
+  .section-lbl{
+    font-size:0.65rem;letter-spacing:3px;text-transform:uppercase;
+    color:#4a2e18;text-align:center;margin:2rem 0 0.8rem;
+  }
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
+    gap:1rem;
+  }
+  .card{
+    background:#140c06;
+    border:1px solid #2a1808;
+    border-radius:12px;
+    padding:1.4rem;
+    transition:border-color 0.25s, transform 0.2s;
+    position:relative;
+    display:flex;flex-direction:column;
+  }
+  .card:hover{border-color:#c9933a44;transform:translateY(-2px)}
+  .card.claimed{opacity:0.55;transform:none!important}
+  .card.claimed:hover{border-color:#2a1808}
+  .card-emoji{font-size:2.2rem;margin-bottom:0.7rem}
+  .card-cat{font-size:0.62rem;letter-spacing:2px;text-transform:uppercase;color:#5a3820;margin-bottom:5px}
+  .card-name{
+    font-family:'Playfair Display',serif;
+    font-size:1.05rem;color:#f5e6d0;
+    margin-bottom:0.3rem;
+    line-height:1.3;
+  }
+  .card.claimed .card-name{text-decoration:line-through;color:#4a2e18}
+  .card-price{font-size:0.75rem;color:#a07850;letter-spacing:1px;margin-bottom:0.5rem}
+  .card-note{font-size:0.73rem;color:#6a4830;font-style:italic;margin-bottom:0.9rem;line-height:1.5;flex:1}
+  .claimed-badge{
+    display:inline-block;
+    background:#2a1400;border:1px solid #c9933a33;
+    color:#c9933a;font-size:0.6rem;letter-spacing:2px;text-transform:uppercase;
+    padding:3px 10px;border-radius:4px;margin-bottom:0.5rem;
+  }
+  .claim-who{font-size:0.7rem;color:#7a5840;font-style:italic;margin-bottom:0.8rem}
+  .btn{
+    width:100%;padding:0.58rem 1rem;border:1px solid;border-radius:7px;
+    cursor:pointer;font-family:'Lato',sans-serif;
+    font-size:0.75rem;letter-spacing:1.8px;text-transform:uppercase;
+    font-weight:700;transition:all 0.2s;margin-top:auto;
+  }
+  .btn-claim{background:transparent;border-color:#c9933a;color:#c9933a}
+  .btn-claim:hover{background:#c9933a;color:#0d0806}
+  .btn-taken{background:transparent;border-color:#2a1808;color:#3a2010;cursor:not-allowed}
+  .btn-undo{background:transparent;border-color:#6a3820;color:#9a5830;cursor:pointer}
+  .btn-undo:hover{background:#2a1000;border-color:#c9933a66;color:#c9933a}
+  .overlay{
+    display:none;position:fixed;inset:0;
+    background:rgba(0,0,0,.82);z-index:200;
+    align-items:center;justify-content:center;padding:1rem;
+  }
+  .overlay.open{display:flex}
+  .modal{
+    background:#140c06;border:1px solid #c9933a44;
+    border-radius:14px;padding:2rem;
+    width:min(460px,100%);max-height:90vh;overflow-y:auto;
+  }
+  .modal h2{
+    font-family:'Playfair Display',serif;
+    color:#c9933a;font-weight:400;
+    margin-bottom:0.5rem;font-size:1.5rem;
+  }
+  .modal p{color:#8a6040;font-size:0.85rem;line-height:1.7;margin-bottom:1.4rem}
+  .modal label{
+    display:block;font-size:0.65rem;
+    letter-spacing:2px;text-transform:uppercase;
+    color:#8a6040;margin-bottom:5px;
+  }
+  .modal input,.modal textarea,.modal select{
+    width:100%;background:#0d0806;border:1px solid #2a1808;
+    color:#f5e6d0;padding:0.65rem 0.9rem;border-radius:7px;
+    font-family:'Lato',sans-serif;font-size:0.88rem;
+    margin-bottom:1rem;outline:none;
+    transition:border-color 0.2s;
+  }
+  .modal input:focus,.modal textarea:focus,.modal select:focus{border-color:#c9933a66}
+  .modal select option{background:#140c06}
+  .modal-row{display:grid;grid-template-columns:1fr 1fr;gap:0.8rem}
+  .modal-footer{display:flex;justify-content:flex-end;gap:0.6rem;margin-top:0.4rem}
+  .btn-primary{
+    background:#c9933a;border:none;color:#0d0806;
+    padding:0.65rem 1.4rem;border-radius:7px;cursor:pointer;
+    font-family:'Lato',sans-serif;font-size:0.78rem;
+    letter-spacing:1.5px;text-transform:uppercase;font-weight:700;
+  }
+  .btn-primary:hover{background:#daa84a}
+  .btn-secondary{
+    background:transparent;border:1px solid #2a1808;color:#8a6040;
+    padding:0.65rem 1.2rem;border-radius:7px;cursor:pointer;
+    font-family:'Lato',sans-serif;font-size:0.78rem;
+    letter-spacing:1.5px;text-transform:uppercase;
+  }
+  .btn-secondary:hover{border-color:#5a3820;color:#c9933a}
+  .edit-item{
+    display:flex;align-items:center;gap:10px;
+    padding:0.75rem 0;border-bottom:1px solid #1e0e06;
+  }
+  .edit-item:last-child{border-bottom:none}
+  .edit-item-emoji{font-size:1.3rem;flex-shrink:0}
+  .edit-item-info{flex:1;min-width:0}
+  .edit-item-name{
+    font-family:'Playfair Display',serif;
+    font-size:0.9rem;color:#c9933a;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .edit-item-price{font-size:0.7rem;color:#5a3820}
+  .edit-item-claimed{
+    font-size:0.6rem;letter-spacing:1px;color:#c9933a55;
+    text-transform:uppercase;flex-shrink:0;
+  }
+  .btn-remove{
+    background:transparent;border:1px solid #5a1818;color:#8a3030;
+    padding:4px 10px;border-radius:5px;cursor:pointer;
+    font-family:'Lato',sans-serif;font-size:0.65rem;
+    letter-spacing:1px;text-transform:uppercase;flex-shrink:0;
+    transition:all 0.2s;
+  }
+  .btn-remove:hover{background:#2a0808;border-color:#c93030;color:#e06060}
+  .admin-btn{
+    position:fixed;bottom:2rem;left:2rem;
+    background:#140c06;border:1px solid #2a1808;color:#6a4830;
+    padding:0.55rem 1.1rem;border-radius:20px;cursor:pointer;
+    font-size:0.7rem;letter-spacing:1.5px;text-transform:uppercase;
+    z-index:100;font-family:'Lato',sans-serif;transition:all 0.2s;
+  }
+  .admin-btn:hover{border-color:#c9933a44;color:#c9933a}
+  .toast{
+    position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);
+    background:#c9933a;color:#0d0806;
+    padding:0.65rem 1.6rem;border-radius:24px;
+    font-size:0.78rem;font-weight:700;letter-spacing:1px;
+    z-index:300;opacity:0;transition:opacity 0.3s;
+    pointer-events:none;white-space:nowrap;
+  }
+  .toast.show{opacity:1}
+  footer{
+    text-align:center;padding:2rem 1rem;
+    color:#3a2010;font-size:0.72rem;letter-spacing:2px;
+    text-transform:uppercase;border-top:1px solid #1a0c06;
+  }
+  .loading{text-align:center;padding:3rem;color:#4a2e18;font-size:0.85rem;letter-spacing:2px}
+  @media(max-width:500px){
+    .hero h1{font-size:1.9rem}
+    .modal-row{grid-template-columns:1fr}
+    .status-bar{gap:1.2rem}
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="ornament">❧ ✦ ❧</span>
+  <h1>Nikita<span class="amp">weds</span>Kunal</h1>
+  <div style="font-family:'Playfair Display',serif;font-size:clamp(1rem,3vw,1.4rem);color:#a07850;margin-top:0.4rem;font-weight:400">
+    Wedding Gift Registry
+  </div>
+  <div class="hero-sub">Reception · 2025</div>
+  <p class="hero-msg">
+    We are so grateful you are celebrating this special occasion with us.
+    Your presence is our greatest gift, but if you still wish to gift us something, please browse our wishlist below.
+    Simply claim an item to let other guests know it is taken — no duplicate gifts!
+  </p>
+</div>
+
+<div class="page">
+  <div class="divider"><span>✦</span></div>
+
+  <div class="status-bar">
+    <div class="stat">
+      <div class="stat-num" id="totalCount">—</div>
+      <div class="stat-lbl">Total Wishes</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" id="availCount">—</div>
+      <div class="stat-lbl">Available</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" id="claimedCount">—</div>
+      <div class="stat-lbl">Claimed</div>
+    </div>
+  </div>
+
+  <div id="loadingMsg" class="loading">Loading registry...</div>
+  <div class="section-lbl" id="availLbl" style="display:none">Available Gifts</div>
+  <div class="grid" id="availGrid"></div>
+  <div class="section-lbl" id="claimedLbl" style="display:none">Already Claimed</div>
+  <div class="grid" id="claimedGrid"></div>
+</div>
+
+<footer>With love — Nikita weds Kunal &nbsp;·&nbsp; 2025</footer>
+
+<button class="admin-btn" id="adminToggleBtn">⚙ Manage List</button>
+<div class="toast" id="toast"></div>
+
+<!-- Claim Modal -->
+<div class="overlay" id="claimOverlay">
+  <div class="modal">
+    <h2>Claim this Gift</h2>
+    <p>Enter your name so Nikita &amp; Kunal know who to thank, and so other guests can see this gift is taken.</p>
+    <label>Your Name</label>
+    <input type="text" id="claimNameInput" placeholder="e.g. Priya &amp; Rohan" maxlength="50"
+      onkeydown="if(event.key==='Enter')confirmClaim()"/>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeOverlay('claimOverlay')">Cancel</button>
+      <button class="btn-primary" onclick="confirmClaim()">Confirm Claim ✦</button>
+    </div>
+  </div>
+</div>
+
+<!-- Password Modal -->
+<div class="overlay" id="pwOverlay">
+  <div class="modal">
+    <h2>Admin Access</h2>
+    <p>Enter the admin password to edit the gift list.</p>
+    <label>Password</label>
+    <input type="password" id="pwInput" placeholder="Enter password"
+      onkeydown="if(event.key==='Enter')checkPw()"/>
+    <div id="pwError" style="color:#c96050;font-size:0.78rem;margin-top:-0.5rem;margin-bottom:0.8rem;display:none">
+      Incorrect password. Please try again.
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeOverlay('pwOverlay')">Cancel</button>
+      <button class="btn-primary" onclick="checkPw()">Enter</button>
+    </div>
+  </div>
+</div>
+
+<!-- Admin Edit Modal -->
+<div class="overlay" id="adminOverlay">
+  <div class="modal" style="width:min(560px,100%)">
+    <h2>Edit Gift List</h2>
+    <p style="margin-bottom:0.8rem">Manage existing gifts or add new ones below.</p>
+    <div id="editList" style="margin-bottom:1.5rem;max-height:260px;overflow-y:auto"></div>
+    <div style="border-top:1px solid #2a1808;padding-top:1.4rem">
+      <p style="font-size:0.65rem;letter-spacing:2px;text-transform:uppercase;color:#8a6040;margin-bottom:1rem">✦ Add New Gift</p>
+      <div class="modal-row">
+        <div>
+          <label>Gift Name *</label>
+          <input type="text" id="newName" placeholder="e.g. Instant Pot"/>
+        </div>
+        <div>
+          <label>Emoji Icon</label>
+          <input type="text" id="newEmoji" placeholder="🍳" maxlength="4"/>
+        </div>
+      </div>
+      <div class="modal-row">
+        <div>
+          <label>Price Range</label>
+          <input type="text" id="newPrice" placeholder="~AUD 150"/>
+        </div>
+        <div>
+          <label>Category</label>
+          <select id="newCat">
+            <option>Home &amp; Kitchen</option>
+            <option>Electronics</option>
+            <option>Travel</option>
+            <option>Experience</option>
+            <option>Fashion</option>
+            <option>Wellness</option>
+            <option>Other</option>
+          </select>
+        </div>
+      </div>
+      <label>Note (optional)</label>
+      <textarea id="newNote" rows="2" placeholder="Specific brand, colour, or link..."></textarea>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeOverlay('adminOverlay')">Done</button>
+        <button class="btn-primary" onclick="addGift()">Add Gift ✦</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Firebase SDK -->
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+  import { getDatabase, ref, onValue, set, update, remove } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+
+  // ── CHANGE THESE TO YOUR FIREBASE CONFIG ──────────────────
+  const firebaseConfig = {
+    apiKey:            "YOUR_API_KEY",
+    authDomain:        "YOUR_PROJECT_ID.firebaseapp.com",
+    databaseURL:       "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
+    projectId:         "YOUR_PROJECT_ID",
+    storageBucket:     "YOUR_PROJECT_ID.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId:             "YOUR_APP_ID"
+  };
+  // ──────────────────────────────────────────────────────────
+
+  const ADMIN_PASSWORD = 'nikita2025'; // Change this!
+
+  const app = initializeApp(firebaseConfig);
+  const db  = getDatabase(app);
+  const giftsRef = ref(db, 'gifts');
+
+  let gifts = [];
+  let pendingClaimId = null;
+  let guestToken = sessionStorage.getItem('guestToken');
+  if(!guestToken){ guestToken = Math.random().toString(36).slice(2)+Date.now(); sessionStorage.setItem('guestToken', guestToken); }
+
+  const DEFAULT_GIFTS = [
+    { id:'g1',  name:'Air Fryer',           emoji:'🍟', price:'~AUD 120',  note:'Any good brand like Philips or Ninja',      cat:'Home & Kitchen' },
+    { id:'g2',  name:'Instant Pot',         emoji:'🥘', price:'~AUD 150',  note:'6-quart or larger preferred',               cat:'Home & Kitchen' },
+    { id:'g3',  name:'Dyson V8 Vacuum',     emoji:'🧹', price:'~AUD 500',  note:'Or any quality cordless vacuum',            cat:'Home & Kitchen' },
+    { id:'g4',  name:'Hotel Stay Voucher',  emoji:'🏨', price:'Any amount', note:'For our honeymoon travels',                cat:'Travel'         },
+    { id:'g5',  name:'Dinner Experience',   emoji:'🍽️', price:'~AUD 200',  note:'Fine dining voucher',                       cat:'Experience'     },
+    { id:'g6',  name:'Smart Watch',         emoji:'⌚', price:'~AUD 300',  note:'Apple Watch or Samsung Galaxy Watch',       cat:'Electronics'    },
+    { id:'g7',  name:'King Bed Linen Set',  emoji:'🛏️', price:'~AUD 180',  note:'King size, neutral colours preferred',      cat:'Home & Kitchen' },
+    { id:'g8',  name:'Coffee Machine',      emoji:'☕', price:'~AUD 250',  note:'We love our morning coffee!',              cat:'Home & Kitchen' },
+    { id:'g9',  name:'Blender / Mixer',     emoji:'🥤', price:'~AUD 100',  note:'NutriBullet or Vitamix style',             cat:'Home & Kitchen' },
+    { id:'g10', name:'Spa Voucher',         emoji:'💆', price:'~AUD 200',  note:'Couples massage or spa day',               cat:'Wellness'       },
+  ].map(g=>({...g, claimed:false, claimedBy:'', claimedToken:'', claimedAt:''}));
+
+  // Listen for real-time changes
+  onValue(giftsRef, (snapshot) => {
+    const data = snapshot.val();
+    if(data){
+      gifts = Object.values(data);
+    } else {
+      // First time: seed with defaults
+      gifts = DEFAULT_GIFTS;
+      const seedObj = {};
+      gifts.forEach(g => seedObj[g.id] = g);
+      set(giftsRef, seedObj);
+    }
+    document.getElementById('loadingMsg').style.display = 'none';
+    document.getElementById('availLbl').style.display = 'block';
+    render();
+  });
+
+  function render(){
+    const avail   = gifts.filter(g=>!g.claimed);
+    const claimed = gifts.filter(g=>g.claimed);
+    document.getElementById('totalCount').textContent   = gifts.length;
+    document.getElementById('availCount').textContent   = avail.length;
+    document.getElementById('claimedCount').textContent = claimed.length;
+    document.getElementById('availGrid').innerHTML   = avail.map(cardHTML).join('');
+    document.getElementById('claimedGrid').innerHTML = claimed.map(cardHTML).join('');
+    document.getElementById('claimedLbl').style.display = claimed.length ? 'block' : 'none';
+  }
+
+  function cardHTML(g){
+    const isMine = (g.claimedToken === guestToken);
+    return `
+    <div class="card${g.claimed ? ' claimed' : ''}">
+      <div class="card-emoji">${g.emoji||'🎁'}</div>
+      <div class="card-cat">${g.cat}</div>
+      <div class="card-name">${g.name}</div>
+      ${g.price ? `<div class="card-price">${g.price}</div>` : ''}
+      ${g.note  ? `<div class="card-note">${g.note}</div>`  : ''}
+      ${g.claimed ? `<div class="claimed-badge">✦ Claimed</div><div class="claim-who">Reserved by ${g.claimedBy||'a guest'}</div>` : ''}
+      ${!g.claimed
+        ? `<button class="btn btn-claim" onclick="window._startClaim('${g.id}')">Claim this Gift ✦</button>`
+        : isMine
+          ? `<button class="btn btn-undo"  onclick="window._unclaim('${g.id}')">↩ Undo — this was me</button>`
+          : `<button class="btn btn-taken" disabled>Already Reserved</button>`
+      }
+    </div>`;
+  }
+
+  // Expose handlers to global scope (needed for onclick in innerHTML)
+  window._startClaim = function(id){
+    pendingClaimId = id;
+    document.getElementById('claimNameInput').value = '';
+    openOverlay('claimOverlay');
+    setTimeout(()=> document.getElementById('claimNameInput').focus(), 120);
+  };
+
+  window._confirmClaim = async function(){
+    const name = document.getElementById('claimNameInput').value.trim();
+    if(!name){ document.getElementById('claimNameInput').focus(); return; }
+    const g = gifts.find(x=>x.id===pendingClaimId);
+    if(!g||g.claimed){ showToast('This gift was just claimed!'); closeOverlay('claimOverlay'); return; }
+    const patch = { claimed:true, claimedBy:name, claimedToken:guestToken, claimedAt:new Date().toISOString() };
+    update(ref(db,'gifts/'+pendingClaimId), patch);
+    closeOverlay('claimOverlay');
+    showToast('✦ Claimed! Thank you, '+name);
+  };
+
+  window._unclaim = function(id){
+    const g = gifts.find(x=>x.id===id);
+    if(!g||g.claimedToken!==guestToken) return;
+    update(ref(db,'gifts/'+id), {claimed:false,claimedBy:'',claimedToken:'',claimedAt:''});
+    showToast('Claim removed.');
+  };
+
+  window._checkPw = function(){
+    if(document.getElementById('pwInput').value===ADMIN_PASSWORD){
+      closeOverlay('pwOverlay');
+      renderEditList();
+      openOverlay('adminOverlay');
+    } else {
+      document.getElementById('pwError').style.display='block';
+      document.getElementById('pwInput').value='';
+      setTimeout(()=> document.getElementById('pwError').style.display='none', 2500);
+    }
+  };
+
+  window._removeGift = function(id){
+    remove(ref(db,'gifts/'+id));
+    showToast('Gift removed.');
+  };
+
+  window._addGift = function(){
+    const name = document.getElementById('newName').value.trim();
+    if(!name){ document.getElementById('newName').focus(); return; }
+    const g = {
+      id: 'g'+Date.now(),
+      name,
+      emoji:  document.getElementById('newEmoji').value.trim()||'🎁',
+      price:  document.getElementById('newPrice').value.trim(),
+      note:   document.getElementById('newNote').value.trim(),
+      cat:    document.getElementById('newCat').value,
+      claimed:false,claimedBy:'',claimedToken:'',claimedAt:''
+    };
+    set(ref(db,'gifts/'+g.id), g);
+    ['newName','newEmoji','newPrice','newNote'].forEach(id=> document.getElementById(id).value='');
+    showToast('✦ "'+g.name+'" added!');
+  };
+
+  function renderEditList(){
+    document.getElementById('editList').innerHTML = gifts.length
+      ? gifts.map(g=>`
+        <div class="edit-item">
+          <span class="edit-item-emoji">${g.emoji||'🎁'}</span>
+          <div class="edit-item-info">
+            <div class="edit-item-name">${g.name}</div>
+            <div class="edit-item-price">${g.price||''} · ${g.cat}</div>
+          </div>
+          ${g.claimed ? `<span class="edit-item-claimed">Claimed</span>` : ''}
+          <button class="btn-remove" onclick="window._removeGift('${g.id}')">Remove</button>
+        </div>`).join('')
+      : '<p style="color:#4a2e18;font-size:0.82rem;text-align:center;padding:1rem">No gifts yet.</p>';
+  }
+
+  function openOverlay(id){ document.getElementById(id).classList.add('open'); }
+  function closeOverlay(id){ document.getElementById(id).classList.remove('open'); }
+  window.openOverlay  = openOverlay;
+  window.closeOverlay = closeOverlay;
+
+  let toastTimer;
+  function showToast(msg){
+    const t=document.getElementById('toast');
+    t.textContent=msg; t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer=setTimeout(()=>t.classList.remove('show'),2800);
+  }
+
+  document.querySelectorAll('.overlay').forEach(el=>{
+    el.addEventListener('click',e=>{ if(e.target===el) el.classList.remove('open'); });
+  });
+
+  document.getElementById('adminToggleBtn').addEventListener('click',()=>{
+    document.getElementById('pwInput').value='';
+    document.getElementById('pwError').style.display='none';
+    openOverlay('pwOverlay');
+    setTimeout(()=>document.getElementById('pwInput').focus(),120);
+  });
+</script>
+
+<!-- Wire up modal buttons (outside module) -->
+<script>
+  function confirmClaim(){ if(window._confirmClaim) window._confirmClaim(); }
+  function checkPw(){ if(window._checkPw) window._checkPw(); }
+  function addGift(){ if(window._addGift) window._addGift(); }
+</script>
+</body>
+</html>
