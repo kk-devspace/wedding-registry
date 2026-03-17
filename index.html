@@ -744,6 +744,11 @@ footer span { color: var(--gold3); }
 <div class="overlay" id="adminOverlay">
   <div class="modal">
     <div class="modal-title">Manage Registry</div>
+    <div style="display:flex;gap:0;margin-bottom:1.2rem;border-bottom:1px solid var(--border);">
+      <button id="tabGifts" onclick="switchTab('gifts')" style="flex:1;padding:0.55rem;background:var(--maroon);border:none;color:white;font-family:Crimson Pro,serif;font-size:0.75rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;">Gift List</button>
+      <button id="tabClaims" onclick="switchTab('claims')" style="flex:1;padding:0.55rem;background:transparent;border:none;color:var(--text3);font-family:Crimson Pro,serif;font-size:0.75rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border-left:1px solid var(--border);">Claims ✦</button>
+    </div>
+    <div id="panelGifts">
     <div class="section-heading" style="font-size:0.6rem;margin-bottom:0.8rem"><span>Current Gifts</span></div>
     <div id="editList" style="max-height:240px;overflow-y:auto;margin-bottom:0.5rem"></div>
     <p class="add-section-title">✦ Add New Gift</p>
@@ -766,6 +771,15 @@ footer span { color: var(--gold3); }
     <div class="modal-actions">
       <button class="btn-ghost" onclick="closeModal('adminOverlay')">Close</button>
       <button class="btn-solid" id="addGiftBtn" onclick="addGift()">Add Gift ✦</button>
+    </div>
+    </div><!-- end panelGifts -->
+
+    <div id="panelClaims" style="display:none">
+      <div class="section-heading" style="font-size:0.6rem;margin-bottom:1rem"><span>All Claimed Gifts</span></div>
+      <div id="claimsList" style="max-height:420px;overflow-y:auto"></div>
+      <div style="margin-top:1.2rem;display:flex;justify-content:flex-end;">
+        <button class="btn-ghost" onclick="closeModal('adminOverlay')">Close</button>
+      </div>
     </div>
   </div>
 </div>
@@ -798,6 +812,8 @@ async function loadGifts() {
     const res = await fetch(BIN_URL + '/latest', { method: 'GET', headers: READ_HEADERS });
     if (!res.ok) { console.error('Load HTTP error:', res.status); return; }
     let raw = await res.json();
+    // JSONbin may return the array directly (X-Bin-Meta:false) OR wrapped in {record:[...]}
+    if (raw && !Array.isArray(raw) && Array.isArray(raw.record)) raw = raw.record;
     if (!Array.isArray(raw)) raw = [];
     gifts = raw.filter(g => g.id !== 'init' && g.name !== 'placeholder');
   } catch(e) { console.error('Load failed:', e); return; }
@@ -812,6 +828,8 @@ async function loadGiftsForced() {
     const res = await fetch(BIN_URL + '/latest', { method: 'GET', headers: READ_HEADERS });
     if (!res.ok) { console.error('Load HTTP error:', res.status); return; }
     let raw = await res.json();
+    // JSONbin may return the array directly (X-Bin-Meta:false) OR wrapped in {record:[...]}
+    if (raw && !Array.isArray(raw) && Array.isArray(raw.record)) raw = raw.record;
     if (!Array.isArray(raw)) raw = [];
     gifts = raw.filter(g => g.id !== 'init' && g.name !== 'placeholder');
   } catch(e) { console.error('Load failed:', e); }
@@ -931,12 +949,59 @@ document.getElementById('adminBtn').addEventListener('click', ()=>{
 
 function checkPw() {
   if (document.getElementById('pwInput').value===ADMIN_PW) {
-    closeModal('pwOverlay'); renderEditList(); openModal('adminOverlay');
+    closeModal('pwOverlay'); switchTab('gifts'); renderEditList(); openModal('adminOverlay');
   } else {
     document.getElementById('pwInput').value='';
     toast('Incorrect password.');
     document.getElementById('pwInput').focus();
   }
+}
+
+function switchTab(tab) {
+  const isGifts = tab === 'gifts';
+  document.getElementById('panelGifts').style.display  = isGifts ? 'block' : 'none';
+  document.getElementById('panelClaims').style.display = isGifts ? 'none'  : 'block';
+  const tG = document.getElementById('tabGifts');
+  const tC = document.getElementById('tabClaims');
+  tG.style.background = isGifts ? 'var(--maroon)' : 'transparent';
+  tG.style.color       = isGifts ? 'white'         : 'var(--text3)';
+  tC.style.background  = isGifts ? 'transparent'   : 'var(--maroon)';
+  tC.style.color        = isGifts ? 'var(--text3)'  : 'white';
+  if (!isGifts) renderClaimsList();
+}
+
+function renderClaimsList() {
+  const claimed = gifts.filter(g => g.claimed);
+  const el = document.getElementById('claimsList');
+  if (!claimed.length) {
+    el.innerHTML = '<p style="color:var(--text3);font-size:1rem;padding:1rem 0;font-style:italic;font-family:Cormorant Garamond,serif;text-align:center">No gifts have been claimed yet.</p>';
+    return;
+  }
+  el.innerHTML = `
+    <table style="width:100%;border-collapse:collapse;font-family:Crimson Pro,serif">
+      <thead>
+        <tr style="border-bottom:2px solid var(--border2)">
+          <th style="text-align:left;padding:0.5rem 0.6rem;font-size:0.65rem;letter-spacing:2px;text-transform:uppercase;color:var(--text3);font-weight:400">Gift</th>
+          <th style="text-align:left;padding:0.5rem 0.6rem;font-size:0.65rem;letter-spacing:2px;text-transform:uppercase;color:var(--text3);font-weight:400">Reserved By</th>
+          <th style="text-align:center;padding:0.5rem 0.6rem;font-size:0.65rem;letter-spacing:2px;text-transform:uppercase;color:var(--text3);font-weight:400">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${claimed.map(g => `
+          <tr style="border-bottom:1px solid var(--border)">
+            <td style="padding:0.6rem;font-size:1rem;color:var(--text)">
+              ${g.emoji||'🎁'} ${esc(g.name)}
+              ${g.price ? '<br><span style="font-size:0.78rem;color:var(--text3)">' + esc(g.price) + '</span>' : ''}
+            </td>
+            <td style="padding:0.6rem;font-size:0.95rem;color:var(--maroon);font-style:italic">${esc(g.claimedBy||'—')}</td>
+            <td style="padding:0.6rem;text-align:center">
+              <span style="background:#f0e8f0;color:var(--maroon);font-size:0.62rem;letter-spacing:1.5px;text-transform:uppercase;padding:3px 8px;border-radius:1px;border:1px solid #d4b8d4">Claimed</span>
+            </td>
+          </tr>`).join('')}
+      </tbody>
+    </table>
+    <p style="margin-top:1rem;font-size:0.8rem;color:var(--text3);font-family:Crimson Pro,serif;text-align:right">${claimed.length} of ${gifts.length} gifts claimed</p>
+  `;
 }
 
 function renderEditList() {
