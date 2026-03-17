@@ -5,131 +5,718 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Nikita weds Kunal — Gift Registry</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet"/>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --gold: #b8892a; --gold-light: #d4aa55; --gold-dim: #7a5c1a;
-    --bg: #0c0805; --bg2: #160e08; --bg3: #1e1208;
-    --text: #f0e2c8; --text-muted: #9a7550; --text-dim: #5a3e28;
-    --border: #2e1c0c; --border-gold: rgba(184,137,42,0.3);
-  }
-  html { scroll-behavior: smooth; }
-  body { font-family: 'Jost', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
-  .band { height: 5px; background: repeating-linear-gradient(90deg, var(--gold) 0px, var(--gold) 12px, transparent 12px, transparent 18px); }
-  .hero { text-align: center; padding: 4rem 1.5rem 3rem; border-bottom: 1px solid var(--border); }
-  .paisley-row { font-size: 1.1rem; color: var(--gold-dim); letter-spacing: 10px; margin-bottom: 1.2rem; }
-  .hero-eyebrow { font-size: 0.7rem; letter-spacing: 5px; text-transform: uppercase; color: var(--gold); margin-bottom: 1rem; }
-  .hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(2.4rem, 6vw, 4rem); font-weight: 500; color: var(--text); line-height: 1.15; }
-  .weds-line { font-family: 'Playfair Display', serif; font-size: clamp(1rem, 3vw, 1.5rem); color: var(--gold); font-style: italic; font-weight: 400; display: block; margin: 0.3rem 0; }
-  .hero-sub { margin-top: 1rem; font-size: 0.72rem; letter-spacing: 4px; text-transform: uppercase; color: var(--text-dim); }
-  .hero-rule { width: 80px; height: 1px; background: var(--gold-dim); margin: 1.5rem auto 0; }
-  .note { max-width: 580px; margin: 2.5rem auto 0; text-align: center; color: var(--text-muted); font-size: 0.88rem; line-height: 1.85; padding: 0 1.5rem; }
-  .stats { display: flex; justify-content: center; gap: 3rem; margin: 2.5rem auto; padding: 1.4rem 2rem; max-width: 460px; background: var(--bg2); border: 1px solid var(--border); border-radius: 4px; flex-wrap: wrap; }
-  .stat { text-align: center; }
-  .stat-num { font-family: 'Playfair Display', serif; font-size: 2.2rem; font-weight: 500; color: var(--gold); display: block; line-height: 1; }
-  .stat-lbl { font-size: 0.62rem; letter-spacing: 3px; text-transform: uppercase; color: var(--text-dim); margin-top: 4px; display: block; }
-  .main { max-width: 960px; margin: 0 auto; padding: 0 1.2rem 6rem; }
-  .section-heading { font-size: 0.62rem; letter-spacing: 4px; text-transform: uppercase; color: var(--text-dim); text-align: center; margin: 2.5rem 0 1.2rem; display: flex; align-items: center; gap: 12px; }
-  .section-heading::before, .section-heading::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1rem; }
-  .card { background: var(--bg2); border: 1px solid var(--border); border-radius: 6px; padding: 1.4rem; display: flex; flex-direction: column; transition: border-color 0.25s; }
-  .card:hover { border-color: var(--border-gold); }
-  .card.claimed { opacity: 0.55; }
-  .card.claimed:hover { border-color: var(--border); }
-  .card-cat { font-size: 0.58rem; letter-spacing: 3px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 0.6rem; }
-  .card-emoji { font-size: 2rem; margin-bottom: 0.8rem; }
-  .card-name { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 500; color: var(--text); line-height: 1.3; margin-bottom: 0.3rem; }
-  .card.claimed .card-name { text-decoration: line-through; color: var(--text-dim); }
-  .card-price { font-size: 0.72rem; color: var(--gold-dim); letter-spacing: 1px; margin-bottom: 0.5rem; }
-  .card-note { font-size: 0.72rem; color: var(--text-dim); font-style: italic; line-height: 1.5; margin-bottom: 1rem; flex: 1; }
-  .claimed-tag { display: inline-flex; align-items: center; gap: 6px; background: rgba(184,137,42,0.08); border: 1px solid var(--border-gold); color: var(--gold-dim); font-size: 0.62rem; letter-spacing: 2px; text-transform: uppercase; padding: 4px 10px; border-radius: 2px; margin-bottom: 0.5rem; }
-  .claimed-by { font-size: 0.7rem; color: var(--text-dim); font-style: italic; margin-bottom: 1rem; }
-  .btn { width: 100%; padding: 0.6rem 1rem; border-radius: 3px; border: 1px solid; cursor: pointer; font-family: 'Jost', sans-serif; font-size: 0.68rem; letter-spacing: 2px; text-transform: uppercase; font-weight: 500; transition: all 0.2s; margin-top: auto; }
-  .btn-claim { background: transparent; border-color: var(--gold-dim); color: var(--gold); }
-  .btn-claim:hover { background: var(--gold); border-color: var(--gold); color: var(--bg); }
-  .btn-disabled { background: transparent; border-color: var(--border); color: var(--text-dim); cursor: not-allowed; }
-  .btn-undo { background: transparent; border-color: #6a3020; color: #a05840; font-size: 0.62rem; }
-  .btn-undo:hover { background: rgba(106,48,32,0.25); }
-  .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.78); z-index: 200; align-items: center; justify-content: center; padding: 1rem; }
-  .overlay.open { display: flex; }
-  .modal { background: var(--bg2); border: 1px solid var(--border-gold); border-radius: 8px; padding: 2rem; width: min(500px, 100%); max-height: 90vh; overflow-y: auto; }
-  .modal-title { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 500; color: var(--gold); margin-bottom: 0.6rem; }
-  .modal-desc { font-size: 0.83rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 1.4rem; }
-  .field-label { font-size: 0.62rem; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 5px; }
-  .field { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 0.65rem 0.9rem; border-radius: 4px; font-family: 'Jost', sans-serif; font-size: 0.88rem; margin-bottom: 1rem; outline: none; transition: border-color 0.2s; }
-  .field:focus { border-color: var(--border-gold); }
-  .field option { background: var(--bg2); }
-  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
-  .modal-actions { display: flex; justify-content: flex-end; gap: 0.6rem; margin-top: 0.5rem; }
-  .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--text-muted); padding: 0.55rem 1.1rem; border-radius: 3px; cursor: pointer; font-family: 'Jost', sans-serif; font-size: 0.72rem; letter-spacing: 1.5px; text-transform: uppercase; transition: all 0.2s; }
-  .btn-ghost:hover { border-color: var(--border-gold); color: var(--text); }
-  .btn-solid { background: var(--gold); border: 1px solid var(--gold); color: var(--bg); padding: 0.55rem 1.3rem; border-radius: 3px; cursor: pointer; font-family: 'Jost', sans-serif; font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase; font-weight: 500; transition: all 0.2s; }
-  .btn-solid:hover { background: var(--gold-light); border-color: var(--gold-light); }
-  .btn-solid:disabled { opacity: 0.5; cursor: not-allowed; }
-  .edit-row { display: flex; align-items: center; gap: 10px; padding: 0.65rem 0; border-bottom: 1px solid var(--border); }
-  .edit-row:last-child { border-bottom: none; }
-  .edit-icon { font-size: 1.1rem; flex-shrink: 0; }
-  .edit-name { flex: 1; font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--gold); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .edit-price { font-size: 0.72rem; color: var(--text-dim); margin-right: 4px; flex-shrink: 0; }
-  .edit-claimed { font-size: 0.58rem; letter-spacing: 1px; color: var(--gold-dim); text-transform: uppercase; flex-shrink: 0; }
-  .btn-remove { background: transparent; border: 1px solid #6a2020; color: #a05050; padding: 3px 9px; border-radius: 3px; cursor: pointer; font-size: 0.62rem; letter-spacing: 1px; font-family: 'Jost', sans-serif; text-transform: uppercase; flex-shrink: 0; transition: background 0.2s; }
-  .btn-remove:hover { background: rgba(106,32,32,0.3); }
-  .add-section-title { font-size: 0.62rem; letter-spacing: 3px; text-transform: uppercase; color: var(--text-muted); margin: 1.4rem 0 1rem; padding-top: 1.4rem; border-top: 1px solid var(--border); }
-  .admin-btn { position: fixed; bottom: 1.8rem; right: 1.8rem; background: var(--bg2); border: 1px solid var(--border); color: var(--text-dim); padding: 0.5rem 1rem; border-radius: 20px; cursor: pointer; font-size: 0.68rem; letter-spacing: 2px; text-transform: uppercase; font-family: 'Jost', sans-serif; z-index: 100; transition: all 0.2s; }
-  .admin-btn:hover { border-color: var(--border-gold); color: var(--text-muted); }
-  .toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--gold); color: var(--bg); padding: 0.6rem 1.6rem; border-radius: 20px; font-size: 0.78rem; font-weight: 500; letter-spacing: 1px; z-index: 300; opacity: 0; transition: opacity 0.3s, transform 0.3s; pointer-events: none; white-space: nowrap; }
-  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-  .loading-msg { text-align: center; padding: 3rem 1rem; color: var(--text-dim); font-size: 0.82rem; letter-spacing: 3px; text-transform: uppercase; }
-  footer { text-align: center; padding: 2rem 1rem 3rem; border-top: 1px solid var(--border); color: var(--text-dim); font-size: 0.68rem; letter-spacing: 3px; text-transform: uppercase; }
-  @media (max-width: 500px) { .two-col { grid-template-columns: 1fr; } .stats { gap: 1.5rem; } .hero h1 { font-size: 2rem; } }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --cream:       #fdf6ec;
+  --cream2:      #faf0e0;
+  --cream3:      #f5e8d0;
+  --gold:        #a8740a;
+  --gold2:       #c9922a;
+  --gold3:       #e8c06a;
+  --gold-pale:   #f5e4b8;
+  --rose:        #c4606a;
+  --rose-pale:   #f9eded;
+  --maroon:      #7a1c2e;
+  --text:        #2c1810;
+  --text2:       #5a3828;
+  --text3:       #8a6248;
+  --border:      #e0c898;
+  --border2:     #d4b880;
+  --shadow:      rgba(100,50,10,0.08);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Crimson Pro', 'EB Garamond', Georgia, serif;
+  background: var(--cream);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── Decorative top stripe ── */
+.top-stripe {
+  height: 6px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--maroon) 0, var(--maroon) 14px,
+    var(--gold2) 14px, var(--gold2) 28px,
+    var(--rose) 28px, var(--rose) 42px,
+    var(--gold2) 42px, var(--gold2) 56px
+  );
+}
+
+/* ── Mandap border row ── */
+.mandap-border {
+  background: var(--cream2);
+  border-bottom: 2px solid var(--border);
+  padding: 0.5rem 0;
+  text-align: center;
+  font-size: clamp(1rem, 2.5vw, 1.5rem);
+  letter-spacing: clamp(8px, 2vw, 20px);
+  color: var(--gold2);
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/* ── Hero ── */
+.hero {
+  background: var(--cream2);
+  text-align: center;
+  padding: clamp(3rem, 7vw, 6rem) clamp(1rem, 5vw, 3rem) clamp(2.5rem, 5vw, 4rem);
+  border-bottom: 2px solid var(--border);
+  position: relative;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(200,150,60,0.08) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 40% at 20% 100%, rgba(196,96,106,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 80% 100%, rgba(196,96,106,0.06) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.hero-tag {
+  display: inline-block;
+  font-family: 'Crimson Pro', serif;
+  font-size: clamp(0.75rem, 1.5vw, 0.9rem);
+  letter-spacing: clamp(3px, 1vw, 6px);
+  text-transform: uppercase;
+  color: var(--gold);
+  border: 1px solid var(--border2);
+  padding: 0.4rem 1.4rem;
+  margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
+  background: white;
+}
+
+.hero-names {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  font-size: clamp(3.5rem, 10vw, 8rem);
+  line-height: 0.95;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+
+.hero-names .name-nikita { display: block; }
+.hero-names .name-kunal  { display: block; color: var(--maroon); }
+
+.hero-weds {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-weight: 300;
+  font-size: clamp(1.4rem, 3.5vw, 2.8rem);
+  color: var(--gold2);
+  display: block;
+  margin: clamp(0.4rem, 1vw, 0.8rem) 0;
+  letter-spacing: 0.05em;
+}
+
+.hero-ornament-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.8rem, 2vw, 2rem);
+  margin: clamp(1.5rem, 3vw, 2.5rem) auto 0;
+  max-width: 600px;
+}
+
+.hero-ornament-row::before,
+.hero-ornament-row::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--border2));
+}
+.hero-ornament-row::after {
+  background: linear-gradient(to left, transparent, var(--border2));
+}
+
+.hero-date {
+  font-family: 'Crimson Pro', serif;
+  font-size: clamp(0.75rem, 1.5vw, 0.9rem);
+  letter-spacing: clamp(3px, 1vw, 6px);
+  text-transform: uppercase;
+  color: var(--text3);
+  white-space: nowrap;
+}
+
+/* ── Intro note ── */
+.intro {
+  background: white;
+  border-bottom: 1px solid var(--border);
+  padding: clamp(2rem, 4vw, 3.5rem) clamp(1.5rem, 8vw, 6rem);
+  text-align: center;
+}
+
+.intro p {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.1rem, 2.2vw, 1.5rem);
+  font-weight: 400;
+  line-height: 1.75;
+  color: var(--text2);
+  max-width: 820px;
+  margin: 0 auto;
+}
+
+.intro strong {
+  color: var(--gold);
+  font-weight: 500;
+  font-style: italic;
+}
+
+/* ── Stats band ── */
+.stats-band {
+  background: var(--maroon);
+  padding: clamp(1.2rem, 2.5vw, 2rem) clamp(1rem, 5vw, 3rem);
+  display: flex;
+  justify-content: center;
+  gap: clamp(2rem, 8vw, 8rem);
+  flex-wrap: wrap;
+}
+
+.stat { text-align: center; }
+
+.stat-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 300;
+  color: var(--gold3);
+  display: block;
+  line-height: 1;
+}
+
+.stat-lbl {
+  font-family: 'Crimson Pro', serif;
+  font-size: clamp(0.65rem, 1.2vw, 0.78rem);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.5);
+  margin-top: 6px;
+  display: block;
+}
+
+/* ── Main content ── */
+.main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: clamp(1.5rem, 3vw, 3rem) clamp(1rem, 3vw, 2.5rem) 6rem;
+}
+
+/* ── Section heading ── */
+.section-heading {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.8rem, 2vw, 1.5rem);
+  margin: clamp(2rem, 4vw, 3rem) 0 clamp(1rem, 2vw, 1.5rem);
+}
+
+.section-heading::before,
+.section-heading::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.section-heading span {
+  font-family: 'Crimson Pro', serif;
+  font-size: clamp(0.65rem, 1.2vw, 0.75rem);
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--text3);
+  white-space: nowrap;
+}
+
+/* ── Grid ── */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(clamp(200px, 22vw, 280px), 1fr));
+  gap: clamp(0.8rem, 1.5vw, 1.2rem);
+}
+
+/* ── Card ── */
+.card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  padding: clamp(1.2rem, 2vw, 1.8rem);
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow 0.25s, border-color 0.25s;
+  position: relative;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 6px; left: 6px; right: -6px; bottom: -6px;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+
+.card:hover { box-shadow: 0 4px 24px var(--shadow); border-color: var(--border2); }
+.card:hover::before { opacity: 1; }
+
+.card.claimed { opacity: 0.6; }
+.card.claimed:hover { box-shadow: none; border-color: var(--border); }
+.card.claimed:hover::before { opacity: 0; }
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: clamp(0.8rem, 1.5vw, 1.2rem);
+}
+
+.card-emoji { font-size: clamp(1.8rem, 3vw, 2.4rem); }
+
+.card-cat {
+  font-family: 'Crimson Pro', serif;
+  font-size: clamp(0.6rem, 1vw, 0.7rem);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text3);
+  background: var(--cream3);
+  padding: 3px 8px;
+  border-radius: 1px;
+}
+
+.card-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.2rem, 2.2vw, 1.55rem);
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1.25;
+  margin-bottom: 0.4rem;
+}
+
+.card.claimed .card-name {
+  text-decoration: line-through;
+  color: var(--text3);
+}
+
+.card-price {
+  font-family: 'Crimson Pro', serif;
+  font-size: clamp(0.8rem, 1.3vw, 0.92rem);
+  color: var(--gold);
+  letter-spacing: 0.5px;
+  margin-bottom: 0.5rem;
+}
+
+.card-note {
+  font-family: 'Crimson Pro', serif;
+  font-size: clamp(0.82rem, 1.3vw, 0.95rem);
+  color: var(--text3);
+  font-style: italic;
+  line-height: 1.55;
+  margin-bottom: clamp(0.8rem, 1.5vw, 1.2rem);
+  flex: 1;
+}
+
+.claimed-ribbon {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 0.5rem;
+}
+
+.claimed-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--rose);
+  flex-shrink: 0;
+}
+
+.claimed-tag {
+  font-family: 'Crimson Pro', serif;
+  font-size: clamp(0.65rem, 1vw, 0.72rem);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--rose);
+}
+
+.claimed-by {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(0.82rem, 1.3vw, 0.95rem);
+  color: var(--text3);
+  font-style: italic;
+  margin-bottom: clamp(0.8rem, 1.5vw, 1.2rem);
+}
+
+/* ── Buttons ── */
+.btn {
+  width: 100%;
+  padding: clamp(0.55rem, 1vw, 0.75rem) 1rem;
+  border-radius: 1px;
+  border: 1px solid;
+  cursor: pointer;
+  font-family: 'Crimson Pro', serif;
+  font-size: clamp(0.72rem, 1.2vw, 0.82rem);
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  transition: all 0.2s;
+  margin-top: auto;
+}
+
+.btn-claim {
+  background: var(--maroon);
+  border-color: var(--maroon);
+  color: white;
+}
+
+.btn-claim:hover {
+  background: #9a2538;
+  border-color: #9a2538;
+}
+
+.btn-disabled {
+  background: transparent;
+  border-color: var(--border);
+  color: var(--text3);
+  cursor: not-allowed;
+}
+
+.btn-undo {
+  background: transparent;
+  border-color: var(--border2);
+  color: var(--text3);
+  font-size: clamp(0.65rem, 1vw, 0.72rem);
+}
+
+.btn-undo:hover {
+  border-color: var(--rose);
+  color: var(--rose);
+}
+
+/* ── Modals ── */
+.overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(44,24,16,0.65);
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  backdrop-filter: blur(2px);
+}
+
+.overlay.open { display: flex; }
+
+.modal {
+  background: var(--cream);
+  border: 1px solid var(--border2);
+  border-radius: 2px;
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+  width: min(520px, 100%);
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.modal::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: repeating-linear-gradient(90deg, var(--maroon) 0, var(--maroon) 10px, var(--gold2) 10px, var(--gold2) 20px);
+}
+
+.modal-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 400;
+  color: var(--maroon);
+  margin-bottom: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.modal-desc {
+  font-family: 'Crimson Pro', serif;
+  font-size: clamp(0.92rem, 1.5vw, 1.05rem);
+  color: var(--text2);
+  line-height: 1.65;
+  margin-bottom: 1.4rem;
+}
+
+.field-label {
+  font-family: 'Crimson Pro', serif;
+  font-size: clamp(0.65rem, 1vw, 0.72rem);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text3);
+  display: block;
+  margin-bottom: 5px;
+}
+
+.field {
+  width: 100%;
+  background: white;
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 0.65rem 0.9rem;
+  border-radius: 2px;
+  font-family: 'Crimson Pro', serif;
+  font-size: clamp(0.95rem, 1.5vw, 1.05rem);
+  margin-bottom: 1rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.field:focus { border-color: var(--gold2); }
+.field option { background: white; }
+
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  margin-top: 0.5rem;
+}
+
+.btn-ghost {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text3);
+  padding: 0.55rem 1.2rem;
+  border-radius: 1px;
+  cursor: pointer;
+  font-family: 'Crimson Pro', serif;
+  font-size: clamp(0.75rem, 1.2vw, 0.85rem);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  transition: all 0.2s;
+}
+
+.btn-ghost:hover { border-color: var(--border2); color: var(--text); }
+
+.btn-solid {
+  background: var(--maroon);
+  border: 1px solid var(--maroon);
+  color: white;
+  padding: 0.55rem 1.4rem;
+  border-radius: 1px;
+  cursor: pointer;
+  font-family: 'Crimson Pro', serif;
+  font-size: clamp(0.75rem, 1.2vw, 0.85rem);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-weight: 400;
+  transition: all 0.2s;
+}
+
+.btn-solid:hover { background: #9a2538; border-color: #9a2538; }
+.btn-solid:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.edit-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.edit-row:last-child { border-bottom: none; }
+.edit-icon { font-size: 1.2rem; flex-shrink: 0; }
+.edit-name { flex: 1; font-family: 'Cormorant Garamond', serif; font-size: 1.05rem; color: var(--maroon); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.edit-price { font-size: 0.8rem; color: var(--text3); flex-shrink: 0; }
+.edit-claimed { font-size: 0.62rem; letter-spacing: 1px; color: var(--rose); text-transform: uppercase; flex-shrink: 0; }
+
+.btn-remove {
+  background: transparent;
+  border: 1px solid #c8a0a0;
+  color: #a05050;
+  padding: 3px 9px;
+  border-radius: 1px;
+  cursor: pointer;
+  font-size: 0.68rem;
+  letter-spacing: 1px;
+  font-family: 'Crimson Pro', serif;
+  text-transform: uppercase;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+
+.btn-remove:hover { background: #fde8e8; border-color: var(--rose); color: var(--rose); }
+
+.add-section-title {
+  font-family: 'Crimson Pro', serif;
+  font-size: 0.72rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin: 1.4rem 0 1rem;
+  padding-top: 1.4rem;
+  border-top: 1px solid var(--border);
+}
+
+/* ── Admin button ── */
+.admin-btn {
+  position: fixed;
+  bottom: 1.8rem;
+  right: 1.8rem;
+  background: white;
+  border: 1px solid var(--border2);
+  color: var(--text3);
+  padding: 0.5rem 1.1rem;
+  border-radius: 20px;
+  cursor: pointer;
+  font-family: 'Crimson Pro', serif;
+  font-size: clamp(0.7rem, 1.2vw, 0.8rem);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  z-index: 100;
+  transition: all 0.2s;
+  box-shadow: 0 2px 12px var(--shadow);
+}
+
+.admin-btn:hover { border-color: var(--gold2); color: var(--gold); }
+
+/* ── Toast ── */
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--maroon);
+  color: white;
+  padding: 0.65rem 1.8rem;
+  border-radius: 20px;
+  font-family: 'Crimson Pro', serif;
+  font-size: clamp(0.85rem, 1.5vw, 0.95rem);
+  letter-spacing: 1px;
+  z-index: 300;
+  opacity: 0;
+  transition: opacity 0.3s, transform 0.3s;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ── Loading ── */
+.loading-msg {
+  text-align: center;
+  padding: 4rem 1rem;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  color: var(--text3);
+  font-size: clamp(1rem, 2vw, 1.3rem);
+  letter-spacing: 2px;
+}
+
+/* ── Footer ── */
+footer {
+  background: var(--maroon);
+  text-align: center;
+  padding: clamp(1.5rem, 3vw, 2.5rem) 1rem;
+  color: rgba(255,255,255,0.45);
+  font-family: 'Crimson Pro', serif;
+  font-size: clamp(0.7rem, 1.2vw, 0.82rem);
+  letter-spacing: 4px;
+  text-transform: uppercase;
+}
+
+footer span { color: var(--gold3); }
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+  .two-col { grid-template-columns: 1fr; }
+  .stats-band { gap: 1.5rem; }
+  .hero-names { font-size: clamp(3rem, 14vw, 4.5rem); }
+  .grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 380px) {
+  .grid { grid-template-columns: 1fr; }
+}
 </style>
 </head>
 <body>
 
-<div class="band"></div>
+<div class="top-stripe"></div>
+<div class="mandap-border">❧ &nbsp; ✦ &nbsp; ॐ &nbsp; ✦ &nbsp; ❧</div>
 
+<!-- Hero -->
 <header class="hero">
-  <div class="paisley-row">✦ ✦ ✦</div>
-  <p class="hero-eyebrow">Wedding Gift Registry</p>
-  <h1>Nikita</h1>
-  <span class="weds-line">weds</span>
-  <h1>Kunal</h1>
-  <p class="hero-sub">Reception · 2025</p>
-  <div class="hero-rule"></div>
+  <div class="hero-tag">Wedding Gift Registry</div>
+
+  <div class="hero-names">
+    <span class="name-nikita">Nikita</span>
+    <span class="hero-weds">weds</span>
+    <span class="name-kunal">Kunal</span>
+  </div>
+
+  <div class="hero-ornament-row">
+    <span class="hero-date">Reception &nbsp;·&nbsp; 2025</span>
+  </div>
 </header>
 
-<p class="note">
-  We are truly grateful to have you celebrate this special occasion with us.
-  Your presence is our greatest gift, but if you still wish to gift us something,
-  please browse our wishlist below. Simply click
-  <strong style="color:var(--gold);font-weight:500">Claim this Gift</strong>
-  to let other guests know you are taking care of that item — so no two guests end up with the same thing.
-</p>
-
-<div class="stats">
-  <div class="stat"><span class="stat-num" id="totalCount">—</span><span class="stat-lbl">Total Wishes</span></div>
-  <div class="stat"><span class="stat-num" id="claimedCount">—</span><span class="stat-lbl">Claimed</span></div>
-  <div class="stat"><span class="stat-num" id="availCount">—</span><span class="stat-lbl">Available</span></div>
+<!-- Intro -->
+<div class="intro">
+  <p>
+    We are truly honoured to celebrate this special occasion with you.
+    Your presence is our greatest gift — but if you still wish to bless us with something,
+    please browse our wishlist. Click <strong>Claim this Gift</strong> to let other guests
+    know you are taking care of that item, so no two guests end up with the same thing.
+  </p>
 </div>
 
+<!-- Stats -->
+<div class="stats-band">
+  <div class="stat">
+    <span class="stat-num" id="totalCount">—</span>
+    <span class="stat-lbl">Total Wishes</span>
+  </div>
+  <div class="stat">
+    <span class="stat-num" id="claimedCount">—</span>
+    <span class="stat-lbl">Claimed</span>
+  </div>
+  <div class="stat">
+    <span class="stat-num" id="availCount">—</span>
+    <span class="stat-lbl">Still Available</span>
+  </div>
+</div>
+
+<!-- Gift Grid -->
 <main class="main">
-  <div id="loadingMsg" class="loading-msg">Loading registry...</div>
-  <div class="section-heading" id="availHeading" style="display:none">Available Gifts</div>
+  <div id="loadingMsg" class="loading-msg">Loading the registry…</div>
+
+  <div class="section-heading" id="availHeading" style="display:none">
+    <span>Available Gifts</span>
+  </div>
   <div class="grid" id="availGrid"></div>
-  <div class="section-heading" id="claimedHeading" style="display:none">Already Claimed</div>
+
+  <div class="section-heading" id="claimedHeading" style="display:none">
+    <span>Already Claimed</span>
+  </div>
   <div class="grid" id="claimedGrid"></div>
 </main>
 
-<footer>Made with love for Nikita &amp; Kunal · 2025</footer>
-<button class="admin-btn" id="adminBtn">⚙ Manage Registry</button>
+<footer>
+  Made with love for <span>Nikita &amp; Kunal</span> &nbsp;·&nbsp; 2025
+</footer>
+
+<button class="admin-btn" id="adminBtn">⚙ Manage</button>
 <div class="toast" id="toast"></div>
 
 <!-- Claim Modal -->
 <div class="overlay" id="claimOverlay">
   <div class="modal">
     <div class="modal-title">Claim this Gift</div>
-    <p class="modal-desc">Please enter your name so the couple knows who to thank. Once claimed, other guests will see this gift is taken.</p>
+    <p class="modal-desc">Enter your name so Nikita and Kunal know who to thank, and so other guests can see this gift has been lovingly taken.</p>
     <label class="field-label">Your Name</label>
     <input class="field" type="text" id="claimNameInput" placeholder="e.g. Priya &amp; Rohan" maxlength="50" onkeydown="if(event.key==='Enter')confirmClaim()"/>
     <div class="modal-actions">
@@ -141,7 +728,7 @@
 
 <!-- Password Modal -->
 <div class="overlay" id="pwOverlay">
-  <div class="modal" style="max-width:360px">
+  <div class="modal" style="max-width:380px">
     <div class="modal-title">Admin Access</div>
     <p class="modal-desc">Enter your password to manage the gift registry.</p>
     <label class="field-label">Password</label>
@@ -153,13 +740,13 @@
   </div>
 </div>
 
-<!-- Admin Edit Modal -->
+<!-- Admin Modal -->
 <div class="overlay" id="adminOverlay">
   <div class="modal">
-    <div class="modal-title">Manage Gift Registry</div>
-    <div class="section-heading" style="font-size:0.6rem;margin-bottom:0.8rem">Current Gifts</div>
-    <div id="editList" style="max-height:250px;overflow-y:auto;margin-bottom:0.5rem"></div>
-    <p class="add-section-title">Add New Gift</p>
+    <div class="modal-title">Manage Registry</div>
+    <div class="section-heading" style="font-size:0.6rem;margin-bottom:0.8rem"><span>Current Gifts</span></div>
+    <div id="editList" style="max-height:240px;overflow-y:auto;margin-bottom:0.5rem"></div>
+    <p class="add-section-title">✦ Add New Gift</p>
     <div class="two-col">
       <div><label class="field-label">Gift Name *</label><input class="field" type="text" id="newName" placeholder="e.g. Instant Pot"/></div>
       <div><label class="field-label">Emoji Icon</label><input class="field" type="text" id="newEmoji" placeholder="🍳" maxlength="4"/></div>
@@ -188,7 +775,8 @@ const ADMIN_PW = 'nikitakunal2025';
 const BIN_ID   = '69b929e5aa77b81da9f0f5b8';
 const API_KEY  = '$2a$10$3at.MuoFiADsiRh25z1zaeODJIbu/LXwAGakzgI5DPelW8vBz7b/2';
 const BIN_URL  = 'https://api.jsonbin.io/v3/b/' + BIN_ID;
-const HEADERS  = { 'Content-Type': 'application/json', 'X-Master-Key': API_KEY };
+const READ_HEADERS  = { 'X-Master-Key': API_KEY, 'X-Bin-Meta': 'false' };
+const WRITE_HEADERS = { 'Content-Type': 'application/json', 'X-Master-Key': API_KEY, 'X-Bin-Meta': 'false' };
 
 let guestId = sessionStorage.getItem('guestId');
 if (!guestId) { guestId = 'g_' + Math.random().toString(36).slice(2,10); sessionStorage.setItem('guestId', guestId); }
@@ -196,17 +784,29 @@ if (!guestId) { guestId = 'g_' + Math.random().toString(36).slice(2,10); session
 let gifts = [];
 let pendingClaimId = null;
 let isSaving = false;
+let lastSavedAt = 0;
+const SAVE_COOLDOWN = 8000;
 
 async function loadGifts() {
+  if (isSaving || (Date.now() - lastSavedAt < SAVE_COOLDOWN)) return;
   try {
-    const res  = await fetch(BIN_URL + '/latest', { headers: { 'X-Master-Key': API_KEY } });
-    const data = await res.json();
-    let raw = data.record;
+    const res = await fetch(BIN_URL + '/latest', { method: 'GET', headers: READ_HEADERS });
+    let raw = await res.json();
     if (!Array.isArray(raw)) raw = [];
     gifts = raw.filter(g => g.id !== 'init' && g.name !== 'placeholder');
-  } catch(e) {
-    console.error('Load failed:', e);
-  }
+  } catch(e) { console.error('Load failed:', e); return; }
+  document.getElementById('loadingMsg').style.display = 'none';
+  document.getElementById('availHeading').style.display = 'flex';
+  render();
+}
+
+async function loadGiftsForced() {
+  try {
+    const res = await fetch(BIN_URL + '/latest', { method: 'GET', headers: READ_HEADERS });
+    let raw = await res.json();
+    if (!Array.isArray(raw)) raw = [];
+    gifts = raw.filter(g => g.id !== 'init' && g.name !== 'placeholder');
+  } catch(e) { console.error('Load failed:', e); }
   document.getElementById('loadingMsg').style.display = 'none';
   document.getElementById('availHeading').style.display = 'flex';
   render();
@@ -216,11 +816,10 @@ async function saveGifts() {
   if (isSaving) return;
   isSaving = true;
   try {
-    const res = await fetch(BIN_URL, { method:'PUT', headers: HEADERS, body: JSON.stringify(gifts) });
+    const res = await fetch(BIN_URL, { method: 'PUT', headers: WRITE_HEADERS, body: JSON.stringify(gifts) });
     if (!res.ok) throw new Error(res.status);
-  } catch(e) {
-    toast('Network error — please try again.');
-  }
+    lastSavedAt = Date.now();
+  } catch(e) { toast('Network error - please try again.'); }
   isSaving = false;
 }
 
@@ -230,7 +829,7 @@ function render() {
   document.getElementById('totalCount').textContent   = gifts.length;
   document.getElementById('claimedCount').textContent = claimed.length;
   document.getElementById('availCount').textContent   = avail.length;
-  document.getElementById('availGrid').innerHTML   = avail.length   ? avail.map(cardHTML).join('')   : '<p style="color:var(--text-dim);font-size:0.82rem;text-align:center;padding:2rem;grid-column:1/-1">All gifts have been claimed — thank you!</p>';
+  document.getElementById('availGrid').innerHTML   = avail.length ? avail.map(cardHTML).join('') : '<p style="color:var(--text3);font-size:1.1rem;text-align:center;padding:2rem;grid-column:1/-1;font-family:Cormorant Garamond,serif;font-style:italic">All gifts have been claimed — thank you!</p>';
   document.getElementById('claimedGrid').innerHTML = claimed.map(cardHTML).join('');
   document.getElementById('claimedHeading').style.display = claimed.length ? 'flex' : 'none';
 }
@@ -238,12 +837,19 @@ function render() {
 function cardHTML(g) {
   const isMine = g.claimedGuestId === guestId;
   return `<div class="card${g.claimed?' claimed':''}">
-    <div class="card-cat">${esc(g.cat||'')}</div>
-    <div class="card-emoji">${g.emoji||'🎁'}</div>
+    <div class="card-top">
+      <div class="card-emoji">${g.emoji||'🎁'}</div>
+      <div class="card-cat">${esc(g.cat||'')}</div>
+    </div>
     <div class="card-name">${esc(g.name)}</div>
     ${g.price?`<div class="card-price">${esc(g.price)}</div>`:''}
     ${g.note?`<div class="card-note">${esc(g.note)}</div>`:'<div style="flex:1"></div>'}
-    ${g.claimed?`<div class="claimed-tag">✦ Claimed</div><div class="claimed-by">Reserved by ${esc(g.claimedBy||'a guest')}</div>`:''}
+    ${g.claimed?`
+      <div class="claimed-ribbon">
+        <div class="claimed-dot"></div>
+        <span class="claimed-tag">Claimed</span>
+      </div>
+      <div class="claimed-by">Reserved by ${esc(g.claimedBy||'a guest')}</div>`:''}
     ${!g.claimed
       ?`<button class="btn btn-claim" onclick="startClaim('${g.id}')">Claim this Gift ✦</button>`
       :isMine
@@ -272,7 +878,7 @@ async function confirmClaim() {
   g.claimed=true; g.claimedBy=name; g.claimedGuestId=guestId;
   await saveGifts(); render();
   closeModal('claimOverlay');
-  toast('✦ Claimed! Thank you, '+name);
+  toast('Claimed — thank you, '+name+' ✦');
   btn.disabled=false; btn.textContent='Confirm Claim ✦';
   pendingClaimId=null;
 }
@@ -309,7 +915,7 @@ function renderEditList() {
         ${g.claimed?`<span class="edit-claimed">Claimed</span>`:''}
         <button class="btn-remove" onclick="removeGift('${g.id}')">Remove</button>
       </div>`).join('')
-    : '<p style="color:var(--text-dim);font-size:0.82rem;padding:0.5rem 0">No gifts yet.</p>';
+    : '<p style="color:var(--text3);font-size:0.9rem;padding:0.5rem 0;font-style:italic">No gifts yet.</p>';
 }
 
 async function removeGift(id) {
@@ -350,8 +956,8 @@ function toast(msg) {
   toastTimer=setTimeout(()=>t.classList.remove('show'),2800);
 }
 
-loadGifts();
-setInterval(loadGifts, 15000);
+loadGiftsForced();
+setInterval(loadGifts, 30000);
 </script>
 </body>
 </html>
