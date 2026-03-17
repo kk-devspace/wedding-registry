@@ -823,17 +823,42 @@ async function loadGifts() {
 }
 
 async function loadGiftsForced() {
-  // Only used on initial page load — always fetches fresh data
+  const msgEl = document.getElementById('loadingMsg');
+  msgEl.style.display = 'block';
+  msgEl.textContent = 'Loading the registry…';
   try {
+    console.log('[Registry] Fetching:', BIN_URL + '/latest');
     const res = await fetch(BIN_URL + '/latest', { method: 'GET', headers: READ_HEADERS });
-    if (!res.ok) { console.error('Load HTTP error:', res.status); return; }
-    let raw = await res.json();
-    // JSONbin may return the array directly (X-Bin-Meta:false) OR wrapped in {record:[...]}
-    if (raw && !Array.isArray(raw) && Array.isArray(raw.record)) raw = raw.record;
-    if (!Array.isArray(raw)) raw = [];
+    console.log('[Registry] HTTP status:', res.status);
+    if (!res.ok) {
+      msgEl.textContent = 'Error loading registry (HTTP ' + res.status + '). Please refresh.';
+      console.error('[Registry] Load HTTP error:', res.status);
+      return;
+    }
+    const body = await res.text();
+    console.log('[Registry] Raw response (first 300 chars):', body.slice(0, 300));
+    let raw;
+    try { raw = JSON.parse(body); } catch(e) {
+      msgEl.textContent = 'Error: invalid response. Please refresh.';
+      console.error('[Registry] JSON parse error:', e);
+      return;
+    }
+    if (raw && !Array.isArray(raw) && Array.isArray(raw.record)) {
+      console.log('[Registry] Unwrapping {record:[...]} format');
+      raw = raw.record;
+    }
+    if (!Array.isArray(raw)) {
+      console.error('[Registry] Unexpected format:', typeof raw, raw);
+      raw = [];
+    }
     gifts = raw.filter(g => g.id !== 'init' && g.name !== 'placeholder');
-  } catch(e) { console.error('Load failed:', e); }
-  document.getElementById('loadingMsg').style.display = 'none';
+    console.log('[Registry] Loaded', gifts.length, 'gifts:', gifts.map(g=>g.name));
+  } catch(e) {
+    msgEl.textContent = 'Network error. Check connection and refresh.';
+    console.error('[Registry] Load threw:', e);
+    return;
+  }
+  msgEl.style.display = 'none';
   document.getElementById('availHeading').style.display = 'flex';
   render();
 }
@@ -856,10 +881,12 @@ async function saveGifts() {
       });
       if (res.ok) {
         saved = true;
-        lastSavedAt = Date.now(); // refresh timestamp on confirmed success
+        lastSavedAt = Date.now();
+        console.log('[Registry] Save attempt', attempt, 'succeeded');
         break;
       } else {
-        console.error('Save attempt', attempt, 'failed with status', res.status);
+        const errBody = await res.text().catch(()=>'');
+        console.error('[Registry] Save attempt', attempt, 'failed — status:', res.status, 'body:', errBody);
       }
     } catch(e) {
       console.error('Save attempt', attempt, 'threw:', e);
