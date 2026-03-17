@@ -815,7 +815,7 @@ async function loadGifts() {
     // JSONbin may return the array directly (X-Bin-Meta:false) OR wrapped in {record:[...]}
     if (raw && !Array.isArray(raw) && Array.isArray(raw.record)) raw = raw.record;
     if (!Array.isArray(raw)) raw = [];
-    gifts = raw.filter(g => g.id !== 'init' && g.name !== 'placeholder');
+    gifts = raw.filter(g => g.id !== 'init' && g.name !== 'placeholder' && g.name !== '_empty');
   } catch(e) { console.error('Load failed:', e); return; }
   document.getElementById('loadingMsg').style.display = 'none';
   document.getElementById('availHeading').style.display = 'flex';
@@ -851,7 +851,7 @@ async function loadGiftsForced() {
       console.error('[Registry] Unexpected format:', typeof raw, raw);
       raw = [];
     }
-    gifts = raw.filter(g => g.id !== 'init' && g.name !== 'placeholder');
+    gifts = raw.filter(g => g.id !== 'init' && g.name !== 'placeholder' && g.name !== '_empty');
     console.log('[Registry] Loaded', gifts.length, 'gifts:', gifts.map(g=>g.name));
   } catch(e) {
     msgEl.textContent = 'Network error. Check connection and refresh.';
@@ -874,10 +874,12 @@ async function saveGifts() {
   // Try up to 3 times with a short delay between attempts
   for (let attempt = 1; attempt <= 3; attempt++) {
     try {
+      // JSONbin rejects empty arrays — use a sentinel when list is empty
+      const payload = gifts.length > 0 ? gifts : [{id:'_empty',name:'_empty',claimed:false}];
       const res = await fetch(BIN_URL, {
         method: 'PUT',
         headers: WRITE_HEADERS,
-        body: JSON.stringify(gifts)
+        body: JSON.stringify(payload)
       });
       if (res.ok) {
         saved = true;
